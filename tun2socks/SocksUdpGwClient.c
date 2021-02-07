@@ -616,28 +616,17 @@ void SocksUdpGwClient_SubmitPacket (SocksUdpGwClient *o, BAddr local_addr, BAddr
     if (!con) {
         // create new connection
         con = connection_init(o, conaddr, data, data_len, is_dns);
-
     } else {
+        // move connection to front of the list
+        LinkedList1_Remove(&o->connections_list, &con->connections_list_node);
+        LinkedList1_Append(&o->connections_list, &con->connections_list_node);
+
         // reset the connection
         reset_connection(o, con, conaddr, is_dns);
 
         // send packet to existing connection
-        int res = connection_send(con, data, data_len);
-        if (res == 1) {
-            BLog(BLOG_ERROR, "The current UDP connection is broken, recreating a new one");
-
-            // free broken connection
-            connection_free(con);
-
-            // create new connection
-            con = connection_init(o, conaddr, data, data_len, is_dns);
-        } else {
-            // remove connection from list
-            LinkedList1_Remove(&o->connections_list, &con->connections_list_node);
-
-            // move connection to front of the list
-            LinkedList1_Append(&o->connections_list, &con->connections_list_node);
-        }
+        // drop the packet if out of buffer
+        connection_send(con, data, data_len);
     }
 #else
     // submit to udpgw client
