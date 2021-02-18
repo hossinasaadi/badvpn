@@ -36,7 +36,7 @@
 #ifdef __ANDROID__
 
 #include <misc/socks_proto.h>
-#define CONNECTION_UDP_BUFFER_SIZE 8
+#define CONNECTION_UDP_BUFFER_SIZE 64
 
 #else
 
