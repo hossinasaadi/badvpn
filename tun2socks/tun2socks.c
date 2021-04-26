@@ -1428,9 +1428,26 @@ int process_device_udp_packet (uint8_t *data, int data_len)
 
     switch (ip_version) {
         case 4: {
-            // ignore non-UDP packets
-            if (data_len < sizeof(struct ipv4_header) || data[offsetof(struct ipv4_header, protocol)] != IPV4_PROTOCOL_UDP) {
+            // ignore non-UDP-nor-ICMP packets
+            if (data_len < sizeof(struct ipv4_header)) {
                 goto fail;
+            }
+            switch (data[offsetof(struct ipv4_header, protocol)]) {
+                case IPV4_PROTOCOL_UDP: break;
+                case IPV4_PROTOCOL_ICMP: {
+                    if (data[0] == 69 && data_len >= 28 && data[20] == 8 && data[21] == 0) { // ping
+                        uint8_t ip_source[4];
+                        memcpy(ip_source, &data[12], 4);
+                        memcpy(&data[12], &data[16], 4);
+                        memcpy(&data[16], ip_source, 4);
+                        data[20] = 0; // response
+                        data[22] += 8; // checksum
+                        if (data[22] < 8) data[23] += 1;
+                        BTap_Send(&device, data, data_len);
+                    }
+                    return 1;
+                }
+                default: goto fail;
             }
 
             // parse IPv4 header
@@ -1483,9 +1500,26 @@ int process_device_udp_packet (uint8_t *data, int data_len)
                 goto fail;
             }
 
-            // ignore non-UDP packets
-            if (data_len < sizeof(struct ipv6_header) || data[offsetof(struct ipv6_header, next_header)] != IPV6_NEXT_UDP) {
+            // ignore non-UDP-nor-ICMP packets
+            if (data_len < sizeof(struct ipv6_header)) {
                 goto fail;
+            }
+            switch (data[offsetof(struct ipv6_header, next_header)]) {
+                case IPV6_NEXT_UDP: break;
+                case IPV6_NEXT_ICMP: {
+                    if (data_len >= 48 && data[40] == 128 && data[41] == 0) { // ping6
+                        uint8_t ip_source[16];
+                        memcpy(ip_source, &data[8], 16);
+                        memcpy(&data[8], &data[24], 16);
+                        memcpy(&data[24], ip_source, 16);
+                        data[40] = 129; // response
+                        data[42] -= 1; // checksum
+                        if (data[42] == 255) data[43] -= 1;
+                        BTap_Send(&device, data, data_len);
+                    }
+                    return 1;
+                }
+                default: goto fail;
             }
 
             // parse IPv6 header

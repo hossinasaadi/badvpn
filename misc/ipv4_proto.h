@@ -42,6 +42,7 @@
 #include <misc/packed.h>
 #include <misc/read_write_int.h>
 
+#define IPV4_PROTOCOL_ICMP 1
 #define IPV4_PROTOCOL_IGMP 2
 #define IPV4_PROTOCOL_UDP 17
 

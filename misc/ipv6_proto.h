@@ -39,6 +39,7 @@
 
 #define IPV6_NEXT_IGMP 2
 #define IPV6_NEXT_UDP 17
+#define IPV6_NEXT_ICMP 58
 
 B_START_PACKED
 struct ipv6_header {
