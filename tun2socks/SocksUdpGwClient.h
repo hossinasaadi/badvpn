@@ -32,6 +32,8 @@
 #include <misc/debug.h>
 #include <base/DebugObject.h>
 #include <system/BReactor.h>
+#include <tun2socks/tun2socks.h>
+
 #ifdef __ANDROID__
 #include <protocol/udpgw_proto.h>
 #include <protocol/packetproto.h>
@@ -124,7 +126,7 @@ typedef struct {
 int SocksUdpGwClient_Init (SocksUdpGwClient *o, int udp_mtu, int max_connections, int send_buffer_size, btime_t keepalive_time,
                            BAddr socks_server_addr, BAddr dnsgw, const struct BSocksClient_auth_info *auth_info, size_t num_auth_info,
                            BAddr remote_udpgw_addr, btime_t reconnect_time, BReactor *reactor, void *user,
-                           SocksUdpGwClient_handler_received handler_received) WARN_UNUSED;
+                           SocksUdpGwClient_handler_received handler_received, Options options) WARN_UNUSED;
 void SocksUdpGwClient_Free (SocksUdpGwClient *o);
 void SocksUdpGwClient_SubmitPacket (SocksUdpGwClient *o, BAddr local_addr, BAddr remote_addr, int is_dns, const uint8_t *data, int data_len);
 
