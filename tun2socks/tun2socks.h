@@ -44,3 +44,36 @@
 
 // option to override the destination addresses to give the SOCKS server
 //#define OVERRIDE_DEST_ADDR "10.111.0.2:2000"
+
+struct Options {
+    int help;
+    int version;
+    int logger;
+    #ifndef BADVPN_USE_WINAPI
+    char *logger_syslog_facility;
+    char *logger_syslog_ident;
+    #endif
+    int loglevel;
+    int loglevels[BLOG_NUM_CHANNELS];
+    char *netif_ipaddr;
+    char *netif_netmask;
+    char *netif_ip6addr;
+    char *socks_server_addr;
+    char *username;
+    char *password;
+    char *password_file;
+    int append_source_to_username;
+    char *udpgw_remote_server_addr;
+    int udpgw_max_connections;
+    int udpgw_connection_buffer_size;
+    int udpgw_transparent_dns;
+#ifdef __ANDROID__
+    int tun_mtu;
+    int fake_proc;
+    char *sock_path;
+    char *pid;
+    char *dnsgw;
+#else
+    char *tundev;
+#endif
+} options;

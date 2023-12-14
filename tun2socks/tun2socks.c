@@ -175,38 +175,6 @@ static void tcp_remove(struct tcp_pcb* pcb_list)
     BPending_Free(&sync_mark);
 
 // command-line options
-struct {
-    int help;
-    int version;
-    int logger;
-    #ifndef BADVPN_USE_WINAPI
-    char *logger_syslog_facility;
-    char *logger_syslog_ident;
-    #endif
-    int loglevel;
-    int loglevels[BLOG_NUM_CHANNELS];
-    char *netif_ipaddr;
-    char *netif_netmask;
-    char *netif_ip6addr;
-    char *socks_server_addr;
-    char *username;
-    char *password;
-    char *password_file;
-    int append_source_to_username;
-    char *udpgw_remote_server_addr;
-    int udpgw_max_connections;
-    int udpgw_connection_buffer_size;
-    int udpgw_transparent_dns;
-#ifdef __ANDROID__
-    int tun_mtu;
-    int fake_proc;
-    char *sock_path;
-    char *pid;
-    char *dnsgw;
-#else
-    char *tundev;
-#endif
-} options;
 
 // TCP client
 struct tcp_client {
@@ -631,7 +599,7 @@ int main (int argc, char **argv)
         // init udpgw client
         if (!SocksUdpGwClient_Init(&udpgw_client, udp_mtu, DEFAULT_UDPGW_MAX_CONNECTIONS, options.udpgw_connection_buffer_size, UDPGW_KEEPALIVE_TIME,
                                    socks_server_addr, dnsgw, socks_auth_info, socks_num_auth_info,
-                                   udpgw_remote_server_addr, UDPGW_RECONNECT_TIME, &ss, NULL, udpgw_client_handler_received
+                                   udpgw_remote_server_addr, UDPGW_RECONNECT_TIME, &ss, NULL, udpgw_client_handler_received, options
         )) {
             BLog(BLOG_ERROR, "SocksUdpGwClient_Init failed");
             goto fail4a;
