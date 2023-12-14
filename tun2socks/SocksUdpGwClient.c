@@ -522,7 +522,7 @@ int SocksUdpGwClient_Init (SocksUdpGwClient *o, int udp_mtu, int max_connections
     o->reactor = reactor;
     o->user = user;
     o->handler_received = handler_received;
-    if(options.udpgw_remote_server_addr == "0.0.0.0:0"){
+    if(strcmp(options.udpgw_remote_server_addr, "0.0.0.0:0") == 0){
         o->dnsgw = dnsgw;
     }
 
