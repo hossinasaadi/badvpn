@@ -32,7 +32,6 @@
 #include <misc/debug.h>
 #include <base/DebugObject.h>
 #include <system/BReactor.h>
-#include <tun2socks/tun2socks.h>
 
 #ifdef __ANDROID__
 #include <protocol/udpgw_proto.h>
@@ -48,6 +47,7 @@
 #include <udpgw_client/UdpGwClient.h>
 #include <socksclient/BSocksClient.h>
 #endif
+#include "tun2socks.h"
 
 //DNS header structure
 typedef struct
