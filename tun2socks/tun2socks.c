@@ -175,7 +175,7 @@ static void tcp_remove(struct tcp_pcb* pcb_list)
     BPending_Free(&sync_mark);
 
 // command-line options
-
+ Options options;
 // TCP client
 struct tcp_client {
     int aborted;

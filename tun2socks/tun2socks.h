@@ -45,7 +45,7 @@
 // option to override the destination addresses to give the SOCKS server
 //#define OVERRIDE_DEST_ADDR "10.111.0.2:2000"
 
-struct Options {
+typedef struct {
     int help;
     int version;
     int logger;
@@ -76,4 +76,4 @@ struct Options {
 #else
     char *tundev;
 #endif
-} options;
+} Options;
