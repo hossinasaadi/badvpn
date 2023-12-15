@@ -32,6 +32,7 @@
 #include <misc/debug.h>
 #include <base/DebugObject.h>
 #include <system/BReactor.h>
+#include <tun2socks/tun2socks.h>
 
 #ifdef __ANDROID__
 #include <protocol/udpgw_proto.h>
@@ -43,11 +44,9 @@
 #include <structure/BAVL.h>
 #include <structure/LinkedList1.h>
 #include <misc/offset.h>
-#else
+#endif
 #include <udpgw_client/UdpGwClient.h>
 #include <socksclient/BSocksClient.h>
-#endif
-#include "tun2socks.h"
 
 //DNS header structure
 typedef struct
@@ -78,6 +77,7 @@ typedef struct {
     int udp_mtu;
     BAddr socks_server_addr;
     BAddr dnsgw;
+    int is_udp_gw;
     const struct BSocksClient_auth_info *auth_info;
     size_t num_auth_info;
     BAddr remote_udpgw_addr;
@@ -90,13 +90,12 @@ typedef struct {
     int max_connections;
     BAVL connections_tree;
     LinkedList1 connections_list;
-#else
+#endif
     UdpGwClient udpgw_client;
     BTimer reconnect_timer;
     int have_socks;
     BSocksClient socks_client;
     int socks_up;
-#endif
     DebugObject d_obj;
 } SocksUdpGwClient;
 
@@ -113,6 +112,7 @@ typedef struct {
     const uint8_t *first_data;
     int first_data_len;
     int is_dns;
+    int is_udp_gw;
     BDatagram udp_dgram;
     BufferWriter udp_send_writer;
     PacketBuffer udp_send_buffer;
@@ -126,7 +126,7 @@ typedef struct {
 int SocksUdpGwClient_Init (SocksUdpGwClient *o, int udp_mtu, int max_connections, int send_buffer_size, btime_t keepalive_time,
                            BAddr socks_server_addr, BAddr dnsgw, const struct BSocksClient_auth_info *auth_info, size_t num_auth_info,
                            BAddr remote_udpgw_addr, btime_t reconnect_time, BReactor *reactor, void *user,
-                           SocksUdpGwClient_handler_received handler_received, Options options) WARN_UNUSED;
+                           SocksUdpGwClient_handler_received handler_received, int is_udp_gw) WARN_UNUSED;
 void SocksUdpGwClient_Free (SocksUdpGwClient *o);
 void SocksUdpGwClient_SubmitPacket (SocksUdpGwClient *o, BAddr local_addr, BAddr remote_addr, int is_dns, const uint8_t *data, int data_len);
 
