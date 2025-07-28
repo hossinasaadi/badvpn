@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NDK_VERSION: 26.1.10909125
+      NDK_VERSION: 26b
       NDK_HOME: ${{ github.workspace }}/android-ndk
 
     steps:
